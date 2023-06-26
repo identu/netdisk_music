@@ -1,7 +1,8 @@
-import 'dart:typed_data';
+
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomeMusic extends StatefulWidget {
   const HomeMusic({Key? key}) : super(key: key);
@@ -11,60 +12,139 @@ class HomeMusic extends StatefulWidget {
 }
 
 class _HomeMusicState extends State<HomeMusic> {
-  final OnAudioQuery audioQuery = OnAudioQuery();
-
-  // List<SongModel> songs = [];
-  // List<AlbumModel> albums = [];
+  List<Song> songs = []; // 音乐列表
+  Song? currentSong; // 当前播放的歌曲
+  bool isPlaying = false; // 是否正在播放
+  double progress = 0.0; // 音乐播放进度
 
   @override
   void initState() {
     super.initState();
-    _loadLocalMusicAlbums();
+    loadMusic();
   }
 
-  Future<void> _loadLocalMusicAlbums() async {
-    audioQuery.querySongs();
-    // await audioQuery.scanMedia('./local_music');
-    // songs = await audioQuery.querySongs(path: './local_music');
-    // albums = await audioQuery.queryAlbums();
+  Future<void> loadMusic() async {
+    final musicDirectory = Directory('assets/local_music');
+    final files = await musicDirectory.list().toList();
+
+    songs = files
+        .where((file) => file.path.endsWith('.ogg'))
+        .map((file) => Song.fromFile(File(file.path)))
+        .toList();
+
+    print('Number of songs: ${songs.length}');
+
     setState(() {});
   }
 
-  Future<Uint8List?> _getAlbumArt(String albumId) async {
-    final artwork = await audioQuery.queryArtwork(albumId as int,ArtworkType.ARTIST);
-    return artwork;
+  void playSong(Song song) {
+    setState(() {
+      currentSong = song;
+      isPlaying = true;
+      // 实现播放逻辑
+    });
+  }
+
+  void pauseSong() {
+    setState(() {
+      isPlaying = false;
+      // 实现暂停逻辑
+    });
+  }
+
+  void playPreviousSong() {
+    setState(() {
+      // 实现上一曲逻辑
+    });
+  }
+
+  void playNextSong() {
+    setState(() {
+      // 实现下一曲逻辑
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Music Player'),
+        title: const Text('Home Music'),
       ),
-      body: ListView.builder(
-        // itemCount: albums.length,
-        itemBuilder: (context, index) {
-          // final album = albums[index];
-          return ListTile(
-            leading: FutureBuilder<Uint8List?>(
-              // future: _getAlbumArt(album.id as String),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Image.memory(snapshot.data!, width: 50, height: 50);
-                } else {
-                  return const SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Icon(Icons.music_note),
-                  );
-                }
-              },
-            ),
-            // title: Text(album.album),
-            // subtitle: Text(album.artist ?? ''),
-          );
-        },
+      body: Stack(
+        children: [
+
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: ListView.builder(
+                    itemCount: songs.length,
+                    itemBuilder: (context, index) {
+                      final song = songs[index];
+                      final isSelected = song == currentSong;
+
+                      return ListTile(
+                        title: Text(song.name),
+                        subtitle: Text(song.artist),
+                        trailing: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (isSelected && isPlaying) {
+                                pauseSong();
+                              } else {
+                                playSong(song);
+                              }
+                            });
+                          },
+                          icon: Icon(
+                            isSelected && isPlaying ? Icons.pause : Icons.play_arrow,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ],
       ),
     );
+  }
+}
+
+class Song {
+  final String name;
+  final String artist;
+  final String duration;
+
+  Song({
+    required this.name,
+    required this.artist,
+    required this.duration,
+  });
+
+  factory Song.fromFile(File file) {
+    final filename = file.path.split('/').last;
+    final parts = filename.split('-');
+    final name = parts[0].trim();
+    final artist = parts[1].trim();
+    return Song(name: name, artist: artist, duration: 'Unknown');
   }
 }
