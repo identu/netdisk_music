@@ -53,7 +53,13 @@ class _NetdiskMusicPageState extends State<NetdiskMusicPage> {
           ],
         )
             : musicList.isEmpty
-            ? ElevatedButton(
+            ? OutlinedButton(
+          style: const ButtonStyle(
+            foregroundColor:
+            MaterialStatePropertyAll<Color>(Colors.white),
+            backgroundColor:
+            MaterialStatePropertyAll<Color>(Colors.black38),
+          ),
           onPressed: fetchMusicList, // 点击按钮时调用 fetchMusicList 方法获取音乐列表
           child: const Text('Fetch Music List'),
         )
