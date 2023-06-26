@@ -33,7 +33,10 @@ class AudioPlayerProvider extends ChangeNotifier {
       totalDuration = duration;
       notifyListeners();
     });
+
   }
+
+  get currentSong => null;
 
   Future<void> playMusic(String songPath) async {
     await audioPlayer.play(AssetSource(songPath));
@@ -56,4 +59,6 @@ class AudioPlayerProvider extends ChangeNotifier {
     String seconds = twoDigits(duration.inSeconds.remainder(60));
     return "$minutes:$seconds";
   }
+
+  void seek(Duration duration) {}
 }

@@ -9,7 +9,12 @@ import 'package:netdisk_music/pages/netdisk_music_page.dart';
 import 'package:netdisk_music/pages/playlist_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+      ChangeNotifierProvider(
+        create: (context) => AudioPlayerProvider(),
+        child: MyApp(),
+      ),
+  );
 }
 
 class MyApp extends StatelessWidget {
