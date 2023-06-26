@@ -131,7 +131,7 @@ class _NetdiskMusicPageState extends State<NetdiskMusicPage> {
         final musicBytes = response.bodyBytes;
 
         // 将音乐文件保存到本地
-        final file = File('./local_music/$musicName');
+        final file = File('assets/local_music/$musicName');
         await file.writeAsBytes(musicBytes);
 
         // 更新已下载的音乐集合

@@ -121,16 +121,7 @@ class _MusicListState extends State<MusicList> {
                 },
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Handle play button action
-                if (selectedSong.isNotEmpty) {
-                  // Play the selected song
-                  print('Playing $selectedSong');
-                }
-              },
-              child: const Text('Play'),
-            ),
+
           ],
         ),
       ),

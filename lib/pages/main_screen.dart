@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netdisk_music/pages/music_list.dart';
 import 'package:netdisk_music/pages/playlist_page.dart';
-import 'package:netdisk_music/pages/favorite_page.dart';
 import 'home_music.dart';
 import 'netdisk_music_page.dart';
 //底栏作为父组件
@@ -64,9 +63,9 @@ class _CustomNavBar extends StatelessWidget {
       onTap: onTap,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.music_note_outlined), label: 'Music'),
+        BottomNavigationBarItem(icon: Icon(Icons.music_note), label: 'Music'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.play_circle_outline),
+          icon: Icon(Icons.play_circle),
           label: 'Playlist',
         ),
         // BottomNavigationBarItem(
@@ -74,7 +73,7 @@ class _CustomNavBar extends StatelessWidget {
         //   label: 'Favourite',
         // ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.cloud_outlined),
+          icon: Icon(Icons.cloud),
           label: 'netdisk-music',
         ),
       ],

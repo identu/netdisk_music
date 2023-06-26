@@ -1,63 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
+import 'package:netdisk_music/provider/music_play_provider.dart';
 
-enum AudioPlayerState {
-  STOPPED,
-  PLAYING,
-  PAUSED,
-}
-
-class MusicPlayer extends StatefulWidget {
+class MusicPlayer extends StatelessWidget {
   final String songPath;
 
   const MusicPlayer({Key? key, required this.songPath}) : super(key: key);
-
-  @override
-  _MusicPlayerState createState() => _MusicPlayerState();
-}
-
-class _MusicPlayerState extends State<MusicPlayer> {
-  late AudioPlayer audioPlayer;
-  AudioPlayerState audioPlayerState = AudioPlayerState.STOPPED;
-
-  @override
-  void initState() {
-    super.initState();
-    audioPlayer = AudioPlayer();
-    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.STOPPED) {
-        setState(() {
-          audioPlayerState = AudioPlayerState.STOPPED;
-        });
-      } else if (state == PlayerState.PLAYING) {
-        setState(() {
-          audioPlayerState = AudioPlayerState.PLAYING;
-        });
-      } else if (state == PlayerState.PAUSED) {
-        setState(() {
-          audioPlayerState = AudioPlayerState.PAUSED;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    audioPlayer.dispose();
-    super.dispose();
-  }
-
-  Future<void> playMusic() async {
-    await audioPlayer.play(widget.songPath, isLocal: true);
-  }
-
-  Future<void> pauseMusic() async {
-    await audioPlayer.pause();
-  }
-
-  Future<void> stopMusic() async {
-    await audioPlayer.stop();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,34 +13,59 @@ class _MusicPlayerState extends State<MusicPlayer> {
       appBar: AppBar(
         title: const Text('Music Player'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: Icon(Icons.play_arrow),
-              onPressed: () {
-                playMusic();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.pause),
-              onPressed: () {
-                pauseMusic();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.stop),
-              onPressed: () {
-                stopMusic();
-              },
-            ),
-            Text(
-              'Player State: $audioPlayerState',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
+      body: Consumer<AudioPlayerProvider>(
+        builder: (context, audioPlayerProvider, _) {
+          final audioPlayerState = audioPlayerProvider.audioPlayerState;
+          final currentPosition = audioPlayerProvider.currentPosition;
+          final totalDuration = audioPlayerProvider.totalDuration;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Player State: $audioPlayerState',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              Slider(
+                value: currentPosition.inMilliseconds.toDouble(),
+                min: 0.0,
+                max: totalDuration.inMilliseconds.toDouble(),
+                onChanged: (double value) {
+                  final position = Duration(milliseconds: value.toInt());
+                  audioPlayerProvider.audioPlayer.seek(position);
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.play_arrow),
+                    onPressed: () {
+                      audioPlayerProvider.playMusic(songPath);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.pause),
+                    onPressed: () {
+                      audioPlayerProvider.pauseMusic();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.stop),
+                    onPressed: () {
+                      audioPlayerProvider.stopMusic();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

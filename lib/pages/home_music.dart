@@ -12,8 +12,9 @@ class HomeMusic extends StatefulWidget {
 
 class _HomeMusicState extends State<HomeMusic> {
   final OnAudioQuery audioQuery = OnAudioQuery();
-  List<SongModel> songs = [];
-  List<AlbumModel> albums = [];
+
+  // List<SongModel> songs = [];
+  // List<AlbumModel> albums = [];
 
   @override
   void initState() {
@@ -22,8 +23,10 @@ class _HomeMusicState extends State<HomeMusic> {
   }
 
   Future<void> _loadLocalMusicAlbums() async {
-    songs = await audioQuery.querySongs();
-    albums = await audioQuery.queryAlbums();
+    audioQuery.querySongs();
+    // await audioQuery.scanMedia('./local_music');
+    // songs = await audioQuery.querySongs(path: './local_music');
+    // albums = await audioQuery.queryAlbums();
     setState(() {});
   }
 
@@ -39,12 +42,12 @@ class _HomeMusicState extends State<HomeMusic> {
         title: const Text('Music Player'),
       ),
       body: ListView.builder(
-        itemCount: albums.length,
+        // itemCount: albums.length,
         itemBuilder: (context, index) {
-          final album = albums[index];
+          // final album = albums[index];
           return ListTile(
             leading: FutureBuilder<Uint8List?>(
-              future: _getAlbumArt(album.id as String),
+              // future: _getAlbumArt(album.id as String),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Image.memory(snapshot.data!, width: 50, height: 50);
@@ -57,8 +60,8 @@ class _HomeMusicState extends State<HomeMusic> {
                 }
               },
             ),
-            title: Text(album.album),
-            subtitle: Text(album.artist ?? ''),
+            // title: Text(album.album),
+            // subtitle: Text(album.artist ?? ''),
           );
         },
       ),
