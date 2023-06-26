@@ -213,19 +213,19 @@ class _HomeMusicState extends State<HomeMusic> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  color: Colors.white,
+                  color: const Color.fromRGBO(0, 0, 0, 1),
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
                       Text(
                         currentSong!.name,
                         style: TextStyle(
-                            color: Colors.black), // Set font color to black
+                            color: Colors.white70), // Set font color to black
                       ),
                       Text(
                         currentSong!.artist,
                         style: TextStyle(
-                            color: Colors.black), // Set font color to black
+                            color: Colors.white70), // Set font color to black
                       ),
                       Slider(
                         value: progress,
@@ -244,6 +244,7 @@ class _HomeMusicState extends State<HomeMusic> {
                           IconButton(
                             onPressed: () => stopSong(),
                             icon: Icon(Icons.stop),
+                            color: Colors.white70,
                           ),
                           IconButton(
                             onPressed: () {
@@ -255,6 +256,7 @@ class _HomeMusicState extends State<HomeMusic> {
                             },
                             icon: Icon(
                               isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Colors.white70,
                             ),
                           ),
                         ],
