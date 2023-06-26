@@ -160,10 +160,10 @@ class _HomeMusicState extends State<HomeMusic> {
                       hintStyle: Theme.of(context)
                           .textTheme
                           .subtitle1!
-                          .copyWith(color: Colors.black12),
+                          .copyWith(color: Colors.white70),
                       suffixIcon: Icon(
                         Icons.search,
-                        color: Colors.black12,
+                        color: Colors.white70,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15.0),
