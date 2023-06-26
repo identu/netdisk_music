@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+enum AudioPlayerState {
+  STOPPED,
+  PLAYING,
+  PAUSED,
+}
+
 class MusicPlayer extends StatefulWidget {
   final String songPath;
 
@@ -8,11 +14,6 @@ class MusicPlayer extends StatefulWidget {
 
   @override
   _MusicPlayerState createState() => _MusicPlayerState();
-}
-enum AudioPlayerState {
-  STOPPED,
-  PLAYING,
-  PAUSED,
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
@@ -23,11 +24,21 @@ class _MusicPlayerState extends State<MusicPlayer> {
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
-    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
-      setState(() {
-        audioPlayerState = state;
-      });
-    } as void Function(PlayerState event)?);
+    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (state == PlayerState.STOPPED) {
+        setState(() {
+          audioPlayerState = AudioPlayerState.STOPPED;
+        });
+      } else if (state == PlayerState.PLAYING) {
+        setState(() {
+          audioPlayerState = AudioPlayerState.PLAYING;
+        });
+      } else if (state == PlayerState.PAUSED) {
+        setState(() {
+          audioPlayerState = AudioPlayerState.PAUSED;
+        });
+      }
+    });
   }
 
   @override
